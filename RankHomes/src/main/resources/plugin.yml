@@ -1,0 +1,27 @@
+name: RankHomes
+version: '${version}'
+main: com.example.rankhomes.RankHomes
+api-version: '26.1'
+authors: [RankHomes]
+description: Rank-based player homes using LuckPerms groups, SQLite storage and a GUI.
+softdepend: [LuckPerms]
+# Commands are registered at runtime so their aliases can be set in config.yml.
+permissions:
+  rankhomes.use:
+    description: Use /sethome, /home, /delhome and /homes.
+    default: true
+  rankhomes.admin:
+    description: Use /homes reload and /homes setlimit.
+    default: op
+  rankhomes.bypass.delay:
+    description: Teleport instantly, ignoring the teleport delay.
+    default: op
+  rankhomes.bypass.cooldown:
+    description: Ignore the home teleport cooldown.
+    default: op
+  rankhomes.bypass.safety:
+    description: Skip the unsafe-location check when teleporting.
+    default: false
+  rankhomes.bypass.blockedworlds:
+    description: Set homes in worlds listed under homes.blocked-worlds.
+    default: op

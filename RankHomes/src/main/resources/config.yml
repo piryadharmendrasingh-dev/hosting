@@ -1,0 +1,243 @@
+# ============================================================================
+# RankHomes configuration.  Colors: legacy '&' codes and '&#RRGGBB' hex.
+# Reload with /homes reload.
+# ============================================================================
+
+homes:
+  # Limit used when a player matches no rank below.
+  default-limit: 3
+  # Hard cap applied to every computed limit (ranks, permissions, overrides).
+  maximum-limit: 10
+  # If true, /homes setlimit values are also capped by maximum-limit.
+  cap-overrides: true
+  # Name shown in the GUI for the default limit / permission-based limit.
+  default-rank-name: "&7Default"
+  permission-rank-name: "&bPermission"
+  # Permission-based limits: a player with "rankhomes.homes.12" gets 12 homes.
+  # The highest matching value wins. Set to "" to disable.
+  permission-prefix: "rankhomes.homes."
+  # HIGHEST or ORDER - see the RANKS section below.
+  rank-mode: HIGHEST
+  # Name used by /sethome, /home and /delhome without an argument.
+  default-home-name: "home"
+  max-name-length: 24
+  name-pattern: "[A-Za-z0-9_-]+"
+  # Players cannot set homes in these worlds (bypass: rankhomes.bypass.blockedworlds).
+  blocked-worlds: []
+
+# ============================================================================
+# RANKS - fully yours to edit. Nothing about ranks is hardcoded in the plugin.
+#
+#  * ADD a rank:      copy a block, change the values.
+#  * REMOVE a rank:   delete its block (or set "enabled: false").
+#  * RENAME a rank:   change "display-name" (shown in the GUI) - the key is
+#                     only a label and can be anything unique.
+#  * REORDER ranks:   move the blocks. Order matters when homes.rank-mode: ORDER.
+#  * CUSTOM GROUPS:   "group" is the exact LuckPerms group name, whatever you
+#                     called it (e.g. donator_gold, supporter, staff-builder).
+#                     Check with:  /lp listgroups
+#  * Optional "permission": a node that also grants this rank (works even
+#                     without a LuckPerms group, e.g. for temporary perks).
+#  * Shorthand also works:   vip: 4   (group = key)
+#
+# Apply changes with /homes reload. Verify with /homes ranks.
+#
+# homes.rank-mode  HIGHEST = the best matching rank wins (default-limit is a floor)
+#                  ORDER   = the FIRST matching rank in this list wins
+# ============================================================================
+ranks:
+  vip:
+    group: vip
+    limit: 4
+    display-name: "&aVIP"
+  vipplus:
+    group: vipplus
+    limit: 5
+    display-name: "&aVIP+"
+  mvp:
+    group: mvp
+    limit: 6
+    display-name: "&bMVP"
+  mvpplus:
+    group: mvpplus
+    limit: 7
+    display-name: "&bMVP+"
+  elite:
+    group: elite
+    limit: 8
+    display-name: "&6Elite"
+  legend:
+    group: legend
+    limit: 9
+    display-name: "&dLegend"
+  owner:
+    group: owner
+    limit: 10
+    display-name: "&cOwner"
+  # Example of a custom group name + permission fallback (disabled):
+  # supporter:
+  #   enabled: false
+  #   group: donator_gold
+  #   permission: myserver.supporter
+  #   limit: 5
+  #   display-name: "&eSupporter"
+
+luckperms:
+  # true  = every group the player inherits counts (recommended).
+  # false = only the primary group counts (needs the LuckPerms plugin).
+  inherited-groups: true
+
+commands:
+  # Extra names for each command. Changes apply on /homes reload.
+  sethome:
+    aliases: [createhome]
+  home:
+    aliases: []
+  delhome:
+    aliases: [removehome, rmhome]
+  homes:
+    aliases: [homelist]
+
+teleport:
+  delay-seconds: 3          # 0 = instant
+  cooldown-seconds: 5       # between successful home teleports, 0 = none
+  cancel-on-move: true
+  cancel-on-damage: true
+  countdown-display: ACTION_BAR   # CHAT, ACTION_BAR, TITLE or NONE
+  safety:
+    enabled: true
+    # SEARCH = move the player to the nearest safe spot; DENY = refuse.
+    mode: SEARCH
+    search-radius: 3
+    search-vertical: 3
+    unsafe-blocks:
+      - LAVA
+      - FIRE
+      - SOUL_FIRE
+      - MAGMA_BLOCK
+      - CAMPFIRE
+      - SOUL_CAMPFIRE
+      - CACTUS
+      - SWEET_BERRY_BUSH
+      - WITHER_ROSE
+      - POWDER_SNOW
+      - COBWEB
+      - NETHER_PORTAL
+      - END_PORTAL
+      - END_GATEWAY
+
+gui:
+  enabled: true
+  # Placeholders: %count% %limit% %page% %pages%
+  title: "&8Homes &7(%count%/%limit%)"
+  rows: 3                    # 2-6; the bottom row is used for controls
+  confirm-delete: true
+  show-empty-slots: true
+  filler:
+    enabled: true
+    material: GRAY_STAINED_GLASS_PANE
+  # Placeholders: %home% %world% %x% %y% %z%
+  home-item:
+    material: RED_BED
+    name: "&a%home%"
+    lore:
+      - "&7World: &f%world%"
+      - "&7Location: &f%x%, %y%, %z%"
+      - ""
+      - "&eLeft-click &7to teleport"
+      - "&cRight-click &7to delete"
+  # Icon by world type (World.Environment). Missing -> home-item.material.
+  environment-icons:
+    NORMAL: GRASS_BLOCK
+    NETHER: NETHERRACK
+    THE_END: END_STONE
+  missing-world-item:
+    material: BARRIER
+    name: "&c%home%"
+    lore:
+      - "&7World: &f%world% &c(unavailable)"
+      - ""
+      - "&cThis world is not loaded."
+      - "&cRight-click &7to delete"
+  # Placeholder: %slot%
+  empty-item:
+    material: LIGHT_GRAY_STAINED_GLASS_PANE
+    name: "&8Empty home slot &7#%slot%"
+    lore:
+      - "&7Use &f/sethome <name> &7to fill it."
+  # Placeholders: %count% %limit% %rank%
+  info-item:
+    material: BOOK
+    name: "&eHomes: &f%count%&7/&f%limit%"
+    lore:
+      - "&7Rank: %rank%"
+  previous-item:
+    material: ARROW
+    name: "&ePrevious page"
+    lore: []
+  next-item:
+    material: ARROW
+    name: "&eNext page"
+    lore: []
+  close-item:
+    material: BARRIER
+    name: "&cClose"
+    lore: []
+  confirm:
+    title: "&8Delete home %home%?"
+    home-item:
+      material: RED_BED
+      name: "&e%home%"
+      lore:
+        - "&7This cannot be undone."
+    confirm-item:
+      material: LIME_CONCRETE
+      name: "&aConfirm delete"
+      lore: []
+    cancel-item:
+      material: RED_CONCRETE
+      name: "&cCancel"
+      lore: []
+
+messages:
+  prefix: "&8[&6Homes&8] &r"
+  no-permission: "%prefix%&cYou do not have permission."
+  players-only: "%prefix%&cThis command can only be used by players."
+  data-error: "%prefix%&cYour home data could not be loaded. Please try again shortly."
+  reloaded: "%prefix%&aConfiguration reloaded."
+  usage-sethome: "%prefix%&cUsage: /sethome [name]"
+  usage-home: "%prefix%&cUsage: /home [name]"
+  usage-delhome: "%prefix%&cUsage: /delhome [name]"
+  usage-homes: "%prefix%&cUsage: /homes [list|ranks|reload|setlimit <player> <amount|reset>]"
+  ranks-header: "%prefix%&eRanks (&f%count%&e) - mode &f%mode%&e - default &f%default%&e - max &f%max%&e:"
+  ranks-entry: "&7 %index%. &f%key% &8| &7group &f%group% &8| &7perm &f%permission% &8| &7homes &f%limit% &8| %name%%warning%"
+  ranks-group-missing: " &c(group not found in LuckPerms!)"
+  ranks-empty: "%prefix%&7No ranks configured; everyone gets the default limit (&f%default%&7)."
+  usage-setlimit: "%prefix%&cUsage: /homes setlimit <player> <amount|reset>"
+  invalid-name: "%prefix%&cInvalid home name. Use letters, numbers, '_' or '-' (max %max% characters)."
+  home-set: "%prefix%&aHome &f%home% &asaved."
+  home-updated: "%prefix%&aHome &f%home% &amoved to your current location."
+  home-deleted: "%prefix%&aHome &f%home% &adeleted."
+  home-not-found: "%prefix%&cHome &f%home% &cwas not found."
+  limit-reached: "%prefix%&cYou have reached your limit of &f%limit% &chomes. Upgrade your rank for more."
+  blocked-world: "%prefix%&cYou cannot set a home in this world."
+  no-homes: "%prefix%&7You have no homes yet. Use &f/sethome&7."
+  homes-header: "%prefix%&eYour homes (&f%count%&e/&f%limit%&e):"
+  homes-entry: "&7 - &f%home% &8(%world% %x% %y% %z%)"
+  homes-entry-missing-world: "&7 - &f%home% &c(world '%world%' unavailable)"
+  world-missing: "%prefix%&cThe world of home &f%home% &c('%world%') is not available."
+  teleport-start: "%prefix%&aTeleporting to &f%home% &ain &f%seconds%s&a. Don't move!"
+  teleport-countdown: "&eTeleporting in &f%seconds%&e..."
+  teleport-already-pending: "%prefix%&cYou are already teleporting."
+  teleport-cooldown: "%prefix%&cPlease wait &f%seconds%s &cbefore teleporting again."
+  teleport-cancelled-move: "%prefix%&cTeleport cancelled because you moved."
+  teleport-cancelled-damage: "%prefix%&cTeleport cancelled because you took damage."
+  teleport-unsafe: "%prefix%&cHome &f%home% &cis not safe to teleport to right now."
+  teleport-adjusted: "%prefix%&7The home was obstructed, so you were moved to a nearby safe spot."
+  teleport-failed: "%prefix%&cThe teleport failed."
+  teleported: "%prefix%&aTeleported to &f%home%&a."
+  player-not-found: "%prefix%&cPlayer &f%player% &cwas not found."
+  invalid-amount: "%prefix%&cAmount must be a whole number from 0 to %max%, or 'reset'."
+  limit-set: "%prefix%&aHome limit of &f%player% &aset to &f%limit%&a."
+  limit-reset: "%prefix%&aHome limit of &f%player% &areset to their rank limit."
+  rank-override: "&dCustom"
